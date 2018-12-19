@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+'''
+----------------------------------
+Comments
+----------------------------------
+'''
+import sys
+import bigsuds as bs
+import time
+
+def pause():
+        try:
+                input("PRESS ENTER TO CONTINUE.")
+        except SyntaxError:
+                pass
+
+if len(sys.argv) < 8:
+    print "Usage %s big-ip_mgmt_ip_address username password dnsserver zone_type zone_name view_name" % sys.argv[0]
+    sys.exit()
+
+a = sys.argv[1:]
+
+b = bs.BIGIP(
+        hostname = a[0],
+        username = a[1],
+        password = a[2]
+)
+
+dnsserver = a[3]
+zone_type = a[4]
+zone_name = a[5]
+view_name = a[6]
+
+zone_file = "db." + view_name + "." + zone_name option_seq = "masters {" + dnsserver + ";};"
+
+# Setup a shortcut to the Zone
+z = b.Management.Zone
+
+print "Transferring Zones...."
+try:
+        z.transfer_zone(
+                [dnsserver],
+                [zone_name],
+                [view_name],
+                [{'zone_type': zone_type, 'zone_name': zone_name, 'view_name': view_name, 'zone_file': zone_file, 'option_seq': [option_seq]}]
+        )
+except Exception, e:
+    print "Error transferring Zones %s" % zone_name
+    print e
