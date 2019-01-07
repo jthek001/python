@@ -1,0 +1,62 @@
+#!/bin/sh
+# These arguments supplied automatically for all external monitors:
+# $1 = IP (IPv6 notation. IPv4 addresses are passed in the form 
+#                         ::ffff:w.x.y.z
+#                         where "w.x.y.z" is the IPv4 address)
+# $2 = port (decimal, host byte order)
+#
+# Additional command line arguments ($3 and higher) may be specified in the monitor template
+# This example does not expect any additional command line arguments
+#
+# Name/Value pairs may also be specified in the monitor template
+# This example expects the following Name/Value pairs:
+#  P_TIMEOUT =  5
+#  URI  = /BroadcastState/Default.aspx?
+#  RECV = OK
+#  HOST = usmgt007.uat.ssi.govt.nz
+
+NODE=`echo ${1} | sed 's/::ffff://'`
+PIDFILE="/var/run/`basename ${0}`.${NODE}__${NODE_PORT}.pid"
+LOGTAG="`basename ${0}`"
+LOGPREFIX="${NODE}:${NODE_PORT}"
+
+# kill of the last instance of this monitor if hung and log current pid
+if [ -f $PIDFILE ]
+then
+   logger -t ${LOGTAG} -p local0.warn "$LOGPREFIX killing previous PID `cat $PIDFILE`"
+   kill -9 `cat $PIDFILE` > /dev/null 
+fi
+echo "$$" > $PIDFILE
+
+#logger -t ${LOGTAG} -p local0.warn "$LOGPREFIX about to curl"
+# send request & check for expected response
+URL="http://${HOST}${URI}?name=$NODE"
+CURLOUTPUT=`curl -sNf -m 5 "$URL"`
+CURLSTATUS=$?
+
+#logger -t ${LOGTAG} -p local0.warn "$LOGPREFIX curl return value: ${CURLSTATUS}"
+
+rm -f $PIDFILE
+
+# If the webserver is unreachable or not returning a page, mark the member UP
+if [ ! $CURLSTATUS -eq 0 ]
+then
+logger -t ${LOGTAG} -p local0.warn "$LOGPREFIX curl error $CURLSTATUS polling ${URL} - marking pool member UP." && echo "UP"
+exit
+fi
+
+#logger -t ${LOGTAG} -p local0.warn "$LOGPREFIX about to grep over $CURLOUTPUT"
+
+grep -q "${RECV}" <<< "$CURLOUTPUT"
+GREPSTATUS=$?
+
+#logger -t ${LOGTAG} -p local0.warn "$LOGPREFIX grep return value: ${GREPSTATUS}"
+
+# Otherwise, we got a page - only mark pool member UP if it contained the expected string.
+if [ $GREPSTATUS -eq 0 ];
+then
+echo "UP"
+exit
+fi
+
+exit
