@@ -1,0 +1,12 @@
+
+
+#ifelse conditions#
+if age <= 2:
+age = int(input('How old are you !'))
+	print('free')
+elif 2 < age < 13:
+	print('child fare')
+	print('15 NZD')
+else:
+	print('Adult Fare')
+	print('60 NZD')			
