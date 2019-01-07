@@ -1,0 +1,214 @@
+
+1. Generating a New CSR and Key
+When generating (or regenerating) a SSL certificate, the first step is to create a new CSR (certificate signing request) with a new public/private key pair:
+
+openssl req -nodes -new -newkey rsa:<number of bits> -out <filename for csr> -keyout <filename for key>
+
+e.g.  openssl req -nodes -new -newkey rsa:4096 -out www.example.com.csr -keyout www.example.com.key
+
+2. Generating a New CSR from Existing Key
+If the private key already exists, it can be used to generate a new CSR also:
+
+openssl req -nodes -new -key <filename for existing key> -out <filename for csr>
+
+e.g.  openssl req -nodes -new -key www.example.com.old.key -out www.example.com.new.csr
+
+3. Generating a New CSR from Existing CRT and Key
+If there is an existing certificate and an existing key, a new CSR with the same information (organizational information, FQDN, etc.) can be easily generated:
+
+openssl x509 -x509toreq -in <filename for existing crt> -signkey <filename for existing key> -out <filename for csr>
+
+e.g.  openssl x509 -x509toreq -in www.example.com.old.crt -signkey www.example.com.key -out www.example.com.csr
+
+4. Generating a CSR with SANs
+SANs (subject alternative names) allow a single CRT to refer to multiple FQDNs. This differs from a wildcard certificate, which refers to all sub-domains of a given domain. The SANs can refer to wildly different domains, like www.example.com and www.example.net.
+
+Generating a CSR with SANs requires using a separate configuration file to list the SANs. The file contains the following default openssl template, plus an additional section for subjectAltNames:
+
+[ req ]
+distinguished_name  = req_distinguished_name
+req_extensions = v3_req
+ 
+[ req_distinguished_name ]
+countryName     = Country Name (2 letter code)
+countryName_default   = AU
+countryName_min     = 2
+countryName_max     = 2
+ 
+stateOrProvinceName   = State or Province Name (full name)
+stateOrProvinceName_default = Some-State
+ 
+localityName      = Locality Name (eg, city)
+ 
+0.organizationName    = Organization Name (eg, company)
+0.organizationName_default  = Internet Widgits Pty Ltd
+ 
+organizationalUnitName    = Organizational Unit Name (eg, section)
+ 
+commonName      = Common Name (e.g. server FQDN or YOUR name)
+commonName_max      = 64
+ 
+emailAddress      = Email Address
+emailAddress_max    = 64
+ 
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+ 
+[alt_names]
+DNS.1 = www.example.net
+DNS.2 = www.example.org
+This file is then passed into the openssl command when generating the new CSR:
+
+openssl req -config <filename of config file> -nodes -new -newkey rsa:<number of bits> -out <filename for csr> -keyout <filename for key>
+
+e.g.  openssl req -config openssl.conf -nodes -new -newkey rsa:4096 -out www.example.com.csr -keyout www.example.com.key
+
+5. Reading a CSR
+Sometimes, it’s helpful to examine an existing CSR to determine what information it contains (such as organizational information, FQDN, etc.):
+
+openssl req -text -noout -in <filename for csr>
+
+e.g. openssl req -text -noout -in www.example.com.csr
+
+This outputs the information in a form similar to:
+
+Certificate Request:
+    Data:
+        Version: 0 (0x0)
+        Subject: C=US, ST=Michigan, L=Grand Rapids, O=Internet Widgits Pty Ltd, CN=www.example.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+            RSA Public Key: (2014 bit)
+                Modulus (2014 bit):
+                    2f:40:9b:bb:fa:3f:2e:0a:71:7c:f7:7a:57:2c:09:
+							[...]
+                Exponent: 65537 (0x10001)
+        Attributes:
+        Requested Extensions:
+            X509v3 Basic Constraints:
+                CA:FALSE
+            X509v3 Key Usage:
+                Digital Signature, Non Repudiation, Key Encipherment
+            X509v3 Subject Alternative Name:
+                DNS:www.example.net, DNS:www.example.org
+    Signature Algorithm: sha1WithRSAEncryption
+        06:40:f5:c8:38:d9:f8:52:8d:62:3c:12:0c:b3:12:e4:64:88:
+			[...]
+6. Reading a CRT
+After a CSR has been sent to the CA (certificate authority) to be digitally signed, a certificate is issued and returned. It is often helpful to examine a certificate to verify dates of validity, and match it with organizational information.
+
+openssl x509 -text -noout -in <filename for crt>
+
+e.g. openssl x509 -text -noout -in www.example.com.crt
+
+This provides output similar to:
+
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            13:97:96:04:76
+        Signature Algorithm: sha1WithRSAEncryption
+        Issuer: C=US, ST=Michigan, O=Internet Widgits Pty Ltd, CN=www.example.com
+        Validity
+            Not Before: Apr 20 02:21:30 2014 GMT
+            Not After : Apr 20 02:21:30 2015 GMT
+        Subject: C=US, ST=Michigan, O=Internet Widgits Pty Ltd, CN=www.example.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+            RSA Public Key: (2014 bit)
+                Modulus (2014 bit):
+                    2f:40:9b:bb:fa:3f:2e:0a:71:7c:f7:7a:57:2c:09:
+							[...]
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Comment: 
+                OpenSSL Generated Certificate
+            X509v3 Subject Key Identifier: 
+                57:85:26:A5:29:41:06:6C:29:74:EC:10:7B:31:1D:E2:78:09:74:54
+            X509v3 Authority Key Identifier: 
+                keyid:57:85:26:A5:29:41:06:6C:29:74:EC:10:7B:31:1D:E2:78:09:74:54
+ 
+    Signature Algorithm: sha1WithRSAEncryption
+        28:cc:5c:25:d0:2e:5b:45:16:f0:fc:75:7d:cd:22:d5:2b:e0:
+			[...]
+7. Verifying a CRT Matches a Private Key
+Updating the private keys and certificates on server can get confusing, especially if poorly named files for previous years exist. If the private key and certificate do not match, web servers usually fail to start, or will not start with SSL. This can lead to all sorts of bad things (like outages). Fortunately, it is easy to sanity check that a key and certificate are matched by comparing their moduli. (The modulus is a component shared between the public key in the CRT and the private key). If the modulus from the CRT and private key match, it is likely that the public and private key are paired.
+
+openssl x509 -noout -modulus -in <filename for crt>
+
+openssl rsa -noout -modulus -in <filename for key
+
+Example:
+
+openssl rsa -noout -modulus -in www.example.com.key
+ 
+Modulus=2F409BBBFA3F2E0A717CF77A572C0922BF95439CFF555627B887D88E6B302730779E6E744476C35AC065394385789AC6C3849B197EDF02C8C311C7F1E070362B4140B09CD50963192DE288E87D89156A1A90F6D0CC18F33B555114B48E77BF203BBD2F9EDB485B55E78A86760F782032DE7169EEA8DBD74AB3D816E612E940268A75D7221AF948728DAD9AFFEAEF13648E49304E86BAA39F39A7936F396BBA168C4C15A274CAED9B647273DF5E9ABC98EDFAE689D4BD6661B2A36324FCD9DAF85F0479D523FF845B46A09776BC87A7877C3646D0BFBC86934CDF9C2E79A2BA0ECF04CB72C349DFCB8BDDD36A6D66BE447426076BD6E2FD790AA82991
+ 
+openssl x509 -noout -modulus -in www.example.com.crt
+ 
+Modulus=2F409BBBFA3F2E0A717CF77A572C0922BF95439CFF555627B887D88E6B302730779E6E744476C35AC065394385789AC6C3849B197EDF02C8C311C7F1E070362B4140B09CD50963192DE288E87D89156A1A90F6D0CC18F33B555114B48E77BF203BBD2F9EDB485B55E78A86760F782032DE7169EEA8DBD74AB3D816E612E940268A75D7221AF948728DAD9AFFEAEF13648E49304E86BAA39F39A7936F396BBA168C4C15A274CAED9B647273DF5E9ABC98EDFAE689D4BD6661B2A36324FCD9DAF85F0479D523FF845B46A09776BC87A7877C3646D0BFBC86934CDF9C2E79A2BA0ECF04CB72C349DFCB8BDDD36A6D66BE447426076BD6E2FD790AA82991
+The moduli can be visually compared, or can be compared programmatically:
+
+#!/bin/bash
+test `openssl rsa -noout -modulus -in $1.key` = \
+ `openssl x509 -noout -modulus -in $1.crt`
+if [ $? = 0 ]
+	then echo "Match!"
+else
+	echo "Not a match!"
+fi
+8. Fingerprinting a CRT
+It can be helpful to compare a certificate’s digital fingerprint with what it is expected to be (either from records, or published statements). For instance, if a new SSL certificate is added to a server, a client might receive a message about an unrecognized or untrusted certificate, along with the certificate’s fingerprint. The user can independently verify the validity of the certificate by comparing the provided fingerprint with the known fingerprint (which should be determined and published beforehand).
+
+openssl x509 -fingerprint -noout -in <filename for crt>
+
+e.g. openssl x509 -fingerprint -noout -in www.example.com.crt
+
+The digest algorithm for the fingerprint can be specified as well:
+
+openssl x509 -fingerprint -noout -in <filename for crt> -sha1
+
+openssl x509 -fingerprint -noout -in <filename for crt> -md5
+
+This gives output similar to:
+
+openssl x509 -noout -fingerprint -in www.example.com.crt -md5
+ 
+MD5 Fingerprint=39:3D:ED:5D:36:88:47:BB:0F:56:75:3F:8F:3E:61:1F
+ 
+openssl x509 -noout -fingerprint -in www.example.com.crt -sha1
+ 
+SHA1 Fingerprint=F1:27:CC:F4:0E:61:42:2F:CF:7D:8E:7F:1F:34:21:36:B8:22:4E:A1
+9. Making it Automated
+It is possible to add all necessary information for a CSR to a configuration file so that it can be read in by openssl instead of using prompts. The following is an example of a file that contains all the necessary information to generate a new CSR:
+
+[ req ]
+prompt = no
+default_bits = 2048
+default_keyfile = www.example.com.key
+encrypt_key = no
+distinguished_name = req_distinguished_name
+ 
+string_mask = utf8only
+ 
+req_extensions = v3_req
+ 
+[ req_distinguished_name ]
+O=Internet Widgits Pty Ltd
+L=Grand Rapids
+ST=Michigan
+C=US
+CN=www.example.com
+ 
+[ v3_req ]
+ 
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+Now, a new CSR can be created with: openssl req -new -config <filename of config file> -out <filename of csr>
+
+e.g. openssl req -new -config openssl.conf -out www.example.com.csr
