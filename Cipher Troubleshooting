@@ -1,0 +1,70 @@
+Cipher Troubleshooting
+
+
+tmsh list ltm profile server-ssl chases_ssl_server_profile
+
+tmsh list ltm profile client-ssl chases_ssl_client_profile
+
+tmsh list ltm cipher rule f5-secure all-properties
+
+tmm --clientciphers 'DEFAULT'
+
+openssl s_client -cipher 'AES256-SHA' -connect 10.10.20.112:443
+
+cat dcsubCA1-cacert.pem dcsubCA2-cacert.pem dcrootCA-cacert.pem > /config/ssl/ssl.crt/dctestchain.crt
+
+
+openssl verify -CAfile dctestchain.crt 
+
+
+
+$ nmap -Pn -sT www.ssllabs.com -p 443 --script ssl-enum-ciphers
+
+Starting Nmap 6.40 at 2017-02-24 11:22 PST
+Nmap scan report for www.ssllabs.com (64.41.200.100)
+Host is up (0.035s latency).
+PORT    STATE SERVICE
+443/tcp open  https
+| ssl-enum-ciphers: 
+|   SSLv3: No supported ciphers found
+|   TLSv1.0: 
+|     ciphers: 
+|       TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA - strong
+|       TLS_DHE_RSA_WITH_AES_128_CBC_SHA - strong
+|       TLS_DHE_RSA_WITH_AES_256_CBC_SHA - strong
+|       TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA - strong
+|       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA - strong
+|       TLS_RSA_WITH_3DES_EDE_CBC_SHA - strong
+|     compressors: 
+|       NULL
+|   TLSv1.1: 
+|     ciphers: 
+|       TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA - strong
+|       TLS_DHE_RSA_WITH_AES_128_CBC_SHA - strong
+|       TLS_DHE_RSA_WITH_AES_256_CBC_SHA - strong
+|       TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA - strong
+|       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA - strong
+|       TLS_RSA_WITH_3DES_EDE_CBC_SHA - strong
+|     compressors: 
+|       NULL
+|   TLSv1.2: 
+|     ciphers: 
+|       TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA - strong
+|       TLS_DHE_RSA_WITH_AES_128_CBC_SHA - strong
+|       TLS_DHE_RSA_WITH_AES_128_CBC_SHA256 - strong
+|       TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 - strong
+|       TLS_DHE_RSA_WITH_AES_256_CBC_SHA - strong
+|       TLS_DHE_RSA_WITH_AES_256_CBC_SHA256 - strong
+|       TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 - strong
+|       TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA - strong
+|       TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 - strong
+|       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 - strong
+|       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA - strong
+|       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 - strong
+|       TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 - strong
+|       TLS_RSA_WITH_3DES_EDE_CBC_SHA - strong
+|     compressors: 
+|       NULL
+|_  least strength: strong
+
+Nmap done: 1 IP address (1 host up) scanned in 2.73 seconds
