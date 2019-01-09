@@ -25,3 +25,17 @@ if __name__ == '__main__':
  
  $ python foo.py sub 5 3
  2
+ 
+Example
+
+To show how this works.
+
+(Remember that sys.argv[0] is the name of the script.
+
+import sys
+
+print "This is the name of the script: ", sys.argv[0]
+
+print "Number of arguments: ", len(sys.argv)
+
+print "The arguments are: " , str(sys.argv)
