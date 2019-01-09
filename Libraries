@@ -1,0 +1,13 @@
+
+
+import os to get a taste of working with the shell CLI within a python script
+
+import re to get a taste of regex querying within python
+
+import boto3 to work with AWS within python
+
+import json and start working with dumps to get a feel for REST API output and how to work with them.
+
+import pandas and start getting familiar with dataframes. it might become useful at some point in your career
+
+import sqlite3 and get familiar with db syntax
