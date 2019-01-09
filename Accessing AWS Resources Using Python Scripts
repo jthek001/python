@@ -1,0 +1,157 @@
+
+Initializing our script
+AWS has SDKs for several programming languages such as Ruby, .NET, Java, etc. In Linux instances you can both use Ruby or Python. You can choose whichever you are comfortable with. I am also experienced in Ruby and use AWS SDK for Ruby in my Rails applications. However, I also gave Python a try and it was very easy to learn Python if you knew Ruby already.
+
+Boto 3 is the AWS SDK for Python. Let’s start by installing Boto 3 using pip, Python’s package manager.
+
+pip install boto3
+After completing installation, let us create a Python script and import boto3 library. I will use Python 3 in this post. You can name your Python file whatever you like.
+
+import boto3
+In this example we will supply a VPC id as an argument while calling the script and display its subnets. I will create a main function that takes vpc id as an argument.
+
+import sys
+import boto3
+
+def main():
+    if len(sys.argv) < 2:
+        print("Please supply a VPC id as an argument!")
+    else:
+        vpc_id = sys.argv[1]
+        print("VPC ID:", vpc_id)
+
+if __name__ == "__main__":
+    main()
+    
+Here we check that user supplies a VPC ID as an argument by importing sys module.
+
+One more thing before accessing AWS resources. You should configure AWS cli in your desktop to define access key id, secret access key and default region values in your environment. This is behind the scope of this post.
+
+Getting VPC resource
+Boto 3 resources are high level abstractions of AWS resources as objects. Every resource has attributes, which can also be other resources or collections, and methods.
+
+To get VPC details, we need to initialize an EC2 resource using Boto 3. Because our VPC resource is an attribute of our EC2 resource. Lets get our VPC and print its CIDR block.
+
+import sys
+import boto3
+
+def main():
+    if len(sys.argv) < 2:
+        print("Please supply a VPC id as an argument!")
+    else:
+        vpc_id = sys.argv[1]
+        print("VPC ID:", vpc_id)
+
+        # Get EC2 resource
+        ec2 = boto3.resource('ec2')
+
+        # Get VPC resource using Ec2 resource by supplying VPC ID
+        vpc = ec2.Vpc(vpc_id)
+        print("VPC CIDR:", vpc.cidr_block)
+
+if __name__ == "__main__":
+    main()
+    
+Using Boto 3 resources to list subnets in a VPC
+Now we have our VPC resource. To list the subnets in the VPC all we need to do is using subnets collection:
+
+import sys
+import boto3
+
+def main():
+    if len(sys.argv) < 2:
+        print("Please supply a VPC id as an argument!")
+    else:
+        vpc_id = sys.argv[1]
+        print("VPC ID:", vpc_id)
+
+        # Get EC2 resource
+        ec2 = boto3.resource('ec2')
+
+        # Get VPC resource using Ec2 resource by supplying VPC ID
+        vpc = ec2.Vpc(vpc_id)
+        print("VPC CIDR:", vpc.cidr_block)
+
+        # Check whether VPC has subnets and display them accordingly
+        subnets = list(vpc.subnets.all())
+        if len(subnets) > 0:
+            print("\nSubnets:")
+            for subnet in subnets:
+                print(subnet.id, "-", subnet.cidr_block)
+        else:
+            print("There is no subnet in this VPC!")
+
+if __name__ == "__main__":
+    main()
+    
+As you can see, we check the length of subnets collection and print each subnet’s ID and CIDR block. This is the final of our example. You can customize this by reading Boto 3 documentation
+
+Using Boto 3 sessions to access different accounts and regions
+In our example, we used default access key id, secret access key and region that is configured in the machine where our script was deployed. This is fine and best practice, because you should use IAM roles in production which circulates access keys periodically. Also, you should not use your access key information from console or embedded to your code.
+
+However, sometimes you may need to use different access keys or access a service in different region than default one. We use Session to customize our connection to AWS.
+
+In previous section we initialized our EC2 resource using boto3 module which acts as a proxy to default session.
+
+        ...
+        # Get EC2 resource
+        ec2 = boto3.resource('ec2')
+        ...
+Suppose our default region is Frankfurt, which has region name “eu-central-1” and we also need to use different access key than our default one. Now, we will change the previous code to manage our own session:
+
+        ...
+        session = boto3.Session(
+            aws_access_key_id= "YOUR-ACCESS-KEY-ID",
+            aws_secret_access_key="YOUR-SECRET-ACCESS-KEY",
+            region_name="eu-west-1"
+        )
+
+        # Get EC2 resource
+        ec2 = session.resource('ec2')
+        ...
+Please, do not hard code your access keys into your Python scripts. It is unsecure. You can put it to a different environment variable or supply it as different arguments to the script.
+
+If you only need to access resources in a different region than this is enough:
+
+        ...
+        session = boto3.Session(
+            region_name="eu-west-1"
+        )
+
+        # Get EC2 resource
+        ec2 = session.resource('ec2')
+        ...
+Using Boto 3 clients to list RDS instances in a VPC
+Boto 3 clients are one to one mappings of AWS API. Actually, Boto 3 resources also use low level clients behind the scenes. I will give an example to using clients by listing RDS instances in our VPC.
+
+In Boto 3, VPC resources do not have a direct attribute as a collection to access RDS instances in it. Therefore, we need to go other way around.
+
+import sys
+import boto3
+
+def main():
+    if len(sys.argv) < 2:
+        print("Please supply a VPC id as an argument!")
+    else:
+        vpc_id = sys.argv[1]
+        print("VPC ID:", vpc_id)
+
+        # Display RDS instances in VPC
+        client = boto3.client('rds')
+        response = client.describe_db_instances()
+
+        # Use Python lambda to filter DB instances that are in our VPC
+        rds_instances = list( filter( lambda x: x["DBSubnetGroup"]["VpcId"] == vpc_id, response["DBInstances"] ) )
+        if len(rds_instances) > 0:
+            print("\nRDS Instances:")
+            for rds in rds_instances:
+                print(rds["DBInstanceIdentifier"])
+        else:
+            print("There is no RDS instance in this VPC!")
+
+if __name__ == "__main__":
+    main()
+    
+As can be seen, we initialized a Boto 3 client to access Amazon RDS service and got our DB Instances as a list using ‘describe_db_instances()’ which is one to one map to ‘describe_db_instances’ of AWS API. Then we filtered the returned dictionary by the vpc id in subnet group of each instance using a Python lambda function (Please do not confuse it with AWS Lambda).
+
+Please not that we only replaced resource 
