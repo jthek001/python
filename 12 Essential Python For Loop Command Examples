@@ -1,0 +1,283 @@
+
+
+1. Python For Loop for Numbers
+To loop through a list of numbers, we just have to create a list of numbers and pass it as an argument to the for loop as shown below.
+
+ # cat for1.py
+for i in [1, 2, 3, 4, 5]:
+  print(i)
+In the above example:
+
+It will loop through all the numbers in the given list (i.e from 1 through 5) and then print them.
+Here, we’ve directly given the list [1, 2, 3, 4, 5] as an argument to the for loop.
+The individual items in the list should be separated by comma.
+Don’t forget to specify the colon [:] at the end of for loop line. This is part of the syntax.
+You can also store the list into a variable, and pass that variable as an argument to the for loop.
+For every for loop iteration, each value is picked-up from the list and stored in the variable given in the for loop. In this example, the variable is “i”.
+Inside the loop, we have only one statement, which is print, which takes the value from of the individual item from the variable i and prints it.
+If you want to execute multiple statements for every iteration of the for loop, then indent them accordingly (i.e put them in the same level as the print command).
+The following is the output of the above program:
+
+# python for1.py
+1
+2
+3
+4
+5
+2. Python For Loop for Strings
+Just list the above list of numbers, you can also loop through list of strings as shown in the following example:
+
+# cat for2.py
+names = ["john", "raj", "lisa"]
+for i in names:
+  print(i)
+In the above example:
+
+We are looping through the three names and printing them out one by one.
+“names” – This is the variable which has a list that in-turn contains three string items.
+The individual items in the names list should be separated by comma.
+Also, make sure you enclose the individual string values in double quotes.
+Again, don’t forget to put the colon at the end of the for loop statement. This colon is part of the for command syntax.
+The following is the output of the above program:
+
+# python for2.py
+john
+raj
+lisa
+3. Python For Loop Using Default Range Function
+In python, when you are dealing with looping through numbers, you can use range function, which is extremely handy.
+
+Range function will produce a list of numbers based on the specified criteria.
+
+In the following example, the argument to the range function is 5. Let us see how this behaves.
+
+# cat for3.py
+for i in range(5):
+ print(i)
+The following output has printed 5 lines. But, as you see it starts from 0 (instead of 1).
+
+# python for3.py
+0
+1
+2
+3
+4
+Note: Again, if you specify range(x), make sure you pay attention to the fact that range function by default will always start with number 0, and then generate “x” number of numbers.
+
+Note: You can also use xrange instead of range. For our practical purpose, both will behave exactly the same. But, when you are dealing with huge list with has 1000’s of items, xrange is recommended, as it is faster. xrange function will generate the numbers that are required on-demand. But, range will generate all the numbers when it is called.
+
+4. Python For Loop With Custom Start and End Numbers
+When you don’t want to start the number sequence from 0, you can also specify the start-value and the end-value in the range function as shown in the example below.
+
+# cat for4.py
+for i in range(1,6):
+  print(i)
+In the above example:
+
+range(1,6) – We’ve specified a start and end value in this range function.
+One important thing to under here is the fact that, this will start with number “1”. But, the value the above will print will be only 5 (and not 6).
+If you want a sequence of 1 .. n, then your range should be: range(1,n+1).
+So, in this example, we wanted sequence from 1 .. 5 and we gave range as range(1,6). i.e the end value is n+1.
+The following is the output of the above program. Again, notice how it starts from 1 and prints through 5 (not 6).
+
+# python for4.py
+1
+2
+3
+4
+5
+5. Python For Loop With Incremental Numbers
+Apart from specifying a start-value and end-value, we can also specify an increment-value.
+
+For example, if you want a sequence like this: 1, 3, 5, 7, 9, …, then the increment-value in this case would be 2, as we are incrementing the next number by 2.
+
+In the following example, we are generating numbers from 1 through 6 with a increment of 2.
+
+# cat for5.py
+for i in range(1,6,2):
+  print(i)
+The following is the output of the above program.
+
+# python for5.py
+1
+3
+5
+Again, as you see here when we give 6 as the end-value, it will go only upto 5. In this case we are also incrementing by 2. Just to be clear:
+
+range(1,6,2) – will print 1,3 and 5
+range(1,5,2) – will print only 1 and 3
+6. Python For Loop Range with Negative Values
+In range function inside for loop, we can also specify negative values.
+
+In the example below, we are using negative numbers for end-value (-5) and increment-value (-2).
+
+# cat for6.py
+for i in range(4,-5,-2):
+  print(i)
+The following is the output of the above program:
+
+# python for6.py
+4
+2
+0
+-2
+-4
+As you see from the above output, it sequence started from the start-value (which is 4), and then increment the next number by the increment-value (which is -2), and keeps going all the way through end-value-1.
+
+7. Continue Statement Inside Python For Loop
+You can use “continue” statement inside python for loop. When a for loop encounters “continue”, it will not execute the rest of the statements in that particular for-loop-block, instead it will start the for-loop again for the next element in the list.
+
+The following example shows how the continue statement works inside the for loop.
+
+# cat for7.py
+names = ["john", "lisa", "raj", "lisa"]
+for i in names:
+  if i != "lisa":
+    continue
+  print(i)
+print("--end--")
+In the above example:
+
+The for loop is looping through a list that has 4 names.
+There are two statements in the for-loop-block (if statement, and print statement)
+The if statement has “continue” inside it, which will get executed only when the name is not equal to list.
+So, in this case, whenever the name is equal to lisa, then it will execute the 2nd statement (i.e print statement).
+But, whenever the name is not equal to lisa, it will go inside the if statement, which has “continue” statement. This means that it will not execute the rest of the statements in the for loop. i.e It will not execute the print statement. But, this will continue to go to the top of the loop, and start the process for the next item in the list.
+Please note that the last print statement is outside the for loop, which will get executed after all the items in the list are processed.
+The following is the output of the above program:
+
+# python for7.py
+lisa
+lisa
+--end--
+8. Break Statement Inside Python For Loop
+Just like continue statement, you can also specify “break” statement inside your for loop in python.
+
+As you can imagine, anytime for loop encounters “break”, then it will completely stop the for loop iteration and exit the for loop. i.e After the “break” statement, it will not process the remaining items in the for loop list.
+
+The following example shows how the break works.
+
+# cat for8.py
+names = ["john", "lisa", "raj", "lisa"]
+for i in names:
+  if i == "raj":
+    break
+  print(i)
+print("--end--")
+As you see from the following output, the moment, the name is equal to “raj”, it will exit the for loop. In this case, “raj” is the 3rd item in the list. So, our for loop printed only the 1st two names.
+
+# python for8.py
+john
+lisa
+--end--
+9. Can a For Loop itself have an Else without If?
+This is a unique feature to Python.
+
+We typically use “else” only in conjunction with “if” statement as we’ve explained earlier. Refer to this: 9 Python if, if else, if elif Command Examples
+
+But, in Python, we can have “else” in conjunction with “for” statement also as explained in this example.
+
+Anything inside the else-block for the for-loop will get executed when the for statement fails as shown below.
+
+# cat for9.py
+names = ["john", "raj", "lisa"]
+for i in names:
+  print(i)
+else:
+  print("for loop condition failed!")
+In the above example:
+
+We have used this simple example only to understand how the “else” works with “for”.
+As you notice, there is no “if” command here. So, the “else” is really part of the “for” command.
+The “else” should be the last line in the for-loop-block.
+In this simple example, the for loop will fail only when it process all the items in the list, as it doesn’t have any more to process. So, in that case, the “else” will get executed.
+So, whatever we have inside else will be executed after all the items are processed.
+The following is the output of the above example:
+
+# python for9.py
+john
+raj
+lisa
+for loop condition failed!
+It might sound like, we might not really need a “else” inside “for” if it only gets executed at the end of for loop iteration.
+
+But, the next example will clarify bit more on what is the advantage of “else” inside for-loop.
+
+10. Else and Break Combination Behavior Inside Python For
+In the previous example, we explained how the “else” inside a for-loop works, which is unique to Python.
+
+One important thing to understand is that when you have a “break” statement inside your for-loop-block, then the “else” part will not be executed.
+
+The following example explains the behavior of break and else combination inside a for loop.
+
+# cat for10.py
+names = ["john", "lisa", "raj", "lisa"]
+for i in names:
+  if i == "raj":
+    break
+  print(i)
+else:
+  print("for loop condition failed!")
+print("--end--")
+As you see from the following ouput, the print command inside the “else” did not get executed this time, because the for loop encounterd a “break” and came-out of the loop in-between.
+
+# python for10.py
+john
+lisa
+--end--
+Note: As you can imagine, “continue” statement has no impact on “else” in for-loop. Else will still behave exactly how it is supposed to when the for loop condition fails.
+
+11. Nested For Loops in Python
+Just like any other programming languages, in python also you can have nested for loops.
+
+When you combine multiple for loops, it can become very effective.
+
+The following example shows how a nested for loop works.
+
+# cat for11.py
+distros = ["centos", "redhat", "ubuntu"]
+arch = ["32-bit", "64-bit"]
+for i in distros:
+  for j in arch:
+    print(i + " " + j)
+  print("-----------")
+In the above example:
+
+We have two lists here (i.e distros and arch).
+The outer for loop is for distros. So, it will loop through every item in the “distros” list.
+The inner for loop is for “arch”. So, for every item in the distro list, this inner loop will loop through every item in the “arch” list.
+The individual element in the outer loop is stored in the variable i
+The individual element in the inner loop is stored in the variable j
+The following is the output of the above example:
+
+# python for11.py
+centos 32-bit
+centos 64-bit
+-----------
+redhat 32-bit
+redhat 64-bit
+-----------
+ubuntu 32-bit
+ubuntu 64-bit
+-----------
+12. Handling List-of-Lists in Python For Loop
+The following example shows how you can use list of lists inside for loop.
+
+# cat for12.py
+multiple_state_lists = [ ["CA","NV","UT"], ["NJ","NY","DE"]]
+for state_list in multiple_state_lists:
+  for state in state_list:
+    print state
+In the above example:
+
+The outer for-loop is looping through the main list-of-lists (which contain two lists in this example).
+The inner for-loop is looping through the individual list themselves.
+The following is the output of the above example:
+
+# python for12.py
+CA
+NV
+UT
+NJ
+NY
+DE
