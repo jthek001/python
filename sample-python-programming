@@ -1,1 +1,80 @@
+# The code below almost works
 
+name = raw_input("Enter your name")
+print("Hello", name)
+result:
+
+Enter your nameSarah
+Hello Sarah
+
+
+# This first line is provided for you
+
+hrs = float(raw_input("Enter Hours:"))
+rph = float(raw_input("Enter rate per hour"))
+print hrs*rph
+
+result:
+Enter Hours:35
+Enter rate per hour2.75
+96.2
+
+
+hrs = raw_input("Enter Hours:")
+h = float(hrs)
+rph = float(raw_input("Enter rate per hour"))
+
+if hrs > 40:
+    print 40*rph + (h-40)*rph*1.5
+else:
+    print h*rph
+    
+result:
+Enter Hours:45
+Enter rate per hour10.5
+498.75
+
+x = float(raw_input("unesite broj"))
+if x <= 1 and x > 0:
+    if x >= 0.9:
+        print "A"
+    elif x >= 0.8:
+        print "B"
+    elif x >= 0.7:
+        print "C"
+    elif x >= 0.6:
+        print "D"
+    elif x < 0.6:
+        print "D"
+else:
+    print "error"
+result:
+unesite broj0.85
+B
+
+def computepay():
+    h = int(raw_input("unesite sate"))
+    r = float(raw_input("unesite cijenu po satu"))
+    if h > 40:
+        return 40*r+ (h-40)*r*1.5
+    else:
+        return h*r
+print computepay()
+
+result:
+unesite sate45
+unesite cijenu po satu10.5
+498.75
+
+largest = None
+smallest = None
+while True:
+    num = raw_input("Enter a number: ")
+    if num == "done": break
+    try:
+        num = int(num)
+        if largest is None or largest < num: largest = num
+        if smallest is None or smallest > num: smallest = num
+    except:
+        print "Invalid input"; continue
+print "Maximum is",largest; print "Minimum is",smallest
