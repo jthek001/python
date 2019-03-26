@@ -10,3 +10,16 @@ elif 2 < age < 13:
 else:
 	print('Adult Fare')
 	print('60 NZD')			
+
+
+n=23
+
+if n == 0:
+    print("zero")
+elif n%2 == 0:
+    print("Even number")
+else:
+    print("odd number")
+
+b = input("Enter the number")
+print(b)
