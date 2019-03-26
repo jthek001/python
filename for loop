@@ -16,3 +16,16 @@ j=0
 for i in (22,33,44,55,66):
     print(j,i)
     j=j+1
+
+
+
+found = False
+print("Before",found)
+for value in [9,4,12,3,74,15]:
+    if value == 3:
+        found = True
+        continue
+    print (found,value)
+print("After",found)
+
+
