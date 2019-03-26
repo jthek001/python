@@ -29,3 +29,13 @@ for value in [9,4,12,3,74,15]:
 print("After",found)
 
 
+
+
+count = 0
+for a in "apple":
+    if a == "p":
+        count = count+1
+print("no. of count of p :",count)
+
+
+
