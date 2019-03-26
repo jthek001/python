@@ -1,0 +1,60 @@
+persons = \
+[
+#   Python to Json
+
+     {
+         'first_name': "John",
+         "isAlive": True,
+         "age": 27,
+         "address": {
+             "streetAddress": "21 2nd Street",
+             "city": "New York",
+             "state": "NY",
+             "postalCode": "10021-3100"
+         },
+         "hasMortgage": None,
+     },
+     {
+         'first_name': "Bob",
+         "isAlive": True,
+         "age": 32,
+         "address": {
+             "streetAddress": "2428 O Conner Street",
+             "city": " Ocean Springs",
+             "state": "Mississippi",
+             "postalCode": "20031-9110"
+         },
+         "hasMortgage": True,
+     }
+ 
+]
+
+
+with open('person_list.json', 'w') as f:
+     json.dump(persons, f)
+	 
+open('person_list.json', 'r').read()
+'[{"hasMortgage": null, "isAlive": true, "age": 27, "address": {"state": "NY", "streetAddress": "21 2nd Street", "city": "New York", "postalCode": "10021-3100"}, "first_name": "John"}, {"hasMortgage": true, "isAlive": true, "age": 32, "address": {"state": "Mississippi", "streetAddress": "2428 O Conner Street", "city": " Ocean Springs", "postalCode": "20031-9110"}, "first_name": "Bob"}]'
+
+with open('person.json', 'r') as f:
+     person = json.load(f)
+ 
+type(person)  # notice the type of data returned by load()
+<class 'dict'>
+ 
+person
+{'age': 27, 'isAlive': True, 'hasMortgage': None, 'address': {'state': 'NY', 'streetAddress': '21 2nd Street', 'city': 'New York', 'postalCode': '10021-3100'}, 'first_name': 'John'}
+ 
+
+
+
+
+Python  Json
+
+None    Null
+True    true
+
+
+Serializing and Deserializing with dumps() and loads()
+The dumps() function works exactly like dump() but instead of sending the output to a file-like object, it returns the output as a string.
+Similarly, loads() function is as same as load() but instead of deserializing the JSON string from a file, it deserializes from a string.
