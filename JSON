@@ -1,0 +1,84 @@
+{
+    "firstName": "John",
+    "lastName": "Smith",
+    "isAlive": true,
+    "age": 27,
+    "address": {
+    "streetAddress": "21 2nd Street",
+        "city": "New York",
+        "state": "NY",
+        "postalCode": "10021-3100"
+    },
+    "phoneNumbers": [
+        {
+            "type": "home",
+            "number": "212 555-1234"
+        },
+        {
+            "type": "office",
+            "number": "646 555-4567"
+        },
+        {
+            "type": "mobile",
+            "number": "123 456-7890"
+        }
+    ],
+    "children": [
+	{
+		"Name":"Jack"
+		"Age":10
+	},
+	{
+		"Name":"Mark"
+		"Age":15
+	}
+	],
+    "spouse": null
+}
+
+Serialization and Deserialization
+
+Serialization: The process of converting an object into a special format which is suitable for transmitting over the network or storing in file or 
+database is called Serialization.
+
+Deserialization: It is the reverse of serialization. It converts the special format returned by the serialization back into a usable object.
+
+
+The dump() function is used to serialize data. It takes a Python object, serializes it and writes the output (which is a JSON string) to a file 
+like object.
+
+The syntax of dump() function is as follows:
+
+Syntax: dump(obj, fp)
+
+ARGUMENT	DESCRIPTION
+obj  		Object to be serialized.
+fp			A file-like object where the serialized data will be written.
+
+import json
+person = {
+     'first_name': "John",
+     "isAlive": True,
+     "age": 27,
+     "address": {
+         "streetAddress": "21 2nd Street",
+         "city": "New York",
+         "state": "NY",
+         "postalCode": "10021-3100"
+     },
+     "hasMortgage": None
+ }
+
+ 
+with open('person.json', 'w') as f:  # writing JSON object
+     json.dump(person, f)
+ 
+   
+open('person.json', 'r').read()   # reading JSON object as string
+'{"hasMortgage": null, "isAlive": true, "age": 27, "address": {"state": "NY", "streetAddress": "21 2nd Street", "city": "New York", "postalCode": "10021-3100"}, "first_name": "John"}'
+ 
+type(open('person.json', 'r').read())   
+<class 'str'>
+
+
+
