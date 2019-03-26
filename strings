@@ -1,0 +1,47 @@
+# Strings
+# Not Mutuable
+
+foo = "this is a string"
+print(foo)
+"this is a string"
+
+# Indexing
+print(foo[0])
+"t"
+
+# Slicing
+print(foo[:5])
+"this"
+
+# Concatenating
+foo = "fruits"
+bar = "vegetables"
+print(foo + bar)
+# for loops 
+fruit = "apple"
+for name in fruit:
+	print(name)
+a
+p
+p
+l
+e
+# while loop (continue)
+fruit = "Mango"
+while True:
+		if  fruit = "n"
+			continue:
+print(fruit)		
+m
+a
+g
+o
+# if ,elif and else conditional statements
+x= 2
+if x==1:
+	print("foo")
+elif x ==2:
+	print("bar")
+else:
+	print("baz")
+  
