@@ -45,3 +45,34 @@ elif x ==2:
 else:
 	print("baz")
   
+word = "Hello World"
+
+print(type(word))
+print(word)
+print(word[0:-1])
+
+
+
+def addtwo(a,b):
+    added=a+b
+    return added
+x = addtwo(3,5)
+print(x)
+
+def mutilpytwo(a,b):
+    added=a*b
+    return added
+x = mutilpytwo(3,5)
+print(x)
+
+
+n=5
+while n > 0:
+    print(n)
+    n=n-1
+
+for numbers in range (5):
+    print(numbers)
+    
+    
+    
