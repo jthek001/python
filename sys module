@@ -1,0 +1,31 @@
+ import sys
+ sys.version
+'2.6.5 (r265:79063, Apr 16 2010, 13:57:41) \n[GCC 4.4.3]'
+ sys.version_info
+(2, 6, 5, 'final', 0)
+
+########################################################
+
+#!/usr/bin/python
+
+import sys
+
+# it's easy to print this list of course:
+print sys.argv
+
+# or it can be iterated via a for loop:
+
+for i in range(len(sys.argv)):
+    if i == 0:
+        print "Function name: %s" % sys.argv[0]
+    else:
+        print "%d. argument: %s" % (i,sys.argv[i])
+      
+$ python arguments.py arg1 arg2
+['arguments.py', 'arg1', 'arg2']
+Function name: arguments.py
+1. argument: arg1
+2. argument: arg2   
+     
+######################################################
+
